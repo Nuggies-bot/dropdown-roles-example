@@ -39,7 +39,7 @@ module.exports.run = async (client, message, args) => {
 
 	collector.on('end', async (msgs, reason) => {
 		if (reason == 'DONE') {
-			const embed = new MessageEmbed()
+			const embed = new Discord.MessageEmbed()
 				.setTitle('Dropdown roles!')
 				.setDescription('Click on the buttons to get the specific role or vice-versa')
 				.setColor('RANDOM')
