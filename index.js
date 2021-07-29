@@ -14,9 +14,7 @@ client.on('ready', () => {
 });
 
 // handle giveaway buttons
-client.on('clickMenu', menu => {
-    Nuggies.dropclick(client, menu);
-});
+Nuggies.handleInteractions(client)
 
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
