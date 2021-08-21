@@ -8,7 +8,7 @@ const Discord = require('discord.js');
  */
 
 module.exports.run = async (client, message, args) => {
-	if(!message.member.hasPermission('MANAGE_SERVER')) return message.reply('You do not have the permission \`MANAGE_SERVER\`');
+	if(!message.member.permissions.has('MANAGE_SERVER')) return message.reply('You do not have the permission \`MANAGE_SERVER\`');
     const dpmanager = new Nuggies.dropdownroles();
 	message.channel.send('Send messages in `roleID label emoji` syntax! Once finished say `done`.');
 
@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
 	 * @param {Discord.Message} m
 	 */
 	const filter = m => m.author.id === message.author.id;
-	const collector = message.channel.createMessageCollector(filter, { max: 10000 });
+	const collector = message.channel.createMessageCollector({ filter, max: 10000 });
 
 	collector.on('collect', async (msg) => {
 		if (!msg.content) return message.channel.send('Invalid syntax');
