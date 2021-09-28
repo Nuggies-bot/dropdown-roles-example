@@ -7,25 +7,25 @@ const Discord = require('discord.js');
  * @param {String[]} args
  */
 
-module.exports.run = async (client, message, args) => {
-	if(!message.member.permissions.has('MANAGE_SERVER')) return message.reply('You do not have the permission \`MANAGE_SERVER\`');
+module.exports.run = async (client, interaction, args) => {
+	if(!interaction.member.permissions.has('MANAGE_SERVER')) return interaction.reply('You do not have the permission \`MANAGE_SERVER\`');
     const dpmanager = new Nuggies.dropdownroles();
-	message.channel.send('Send messages in `roleID label emoji` syntax! Once finished say `done`.');
+	interaction.reply('Send messages in `roleID label emoji` syntax! Once finished say `done`.');
 
 	/**
 	 * @param {Discord.Message} m
 	 */
-	const filter = m => m.author.id === message.author.id;
-	const collector = message.channel.createMessageCollector({ filter, max: 10000 });
+	const filter = m => m.author.id === interaction.user.id;
+	const collector = interaction.channel.createMessageCollector({ filter, max: 10000 });
 
 	collector.on('collect', async (msg) => {
-		if (!msg.content) return message.channel.send('Invalid syntax');
+		if (!msg.content) return interaction.channel.send('Invalid syntax');
 		if (msg.content.toLowerCase() == 'done') return collector.stop('DONE');
-		if (!msg.content.split(' ')[0].match(/[0-9]{18}/g)) return message.channel.send('Invalid syntax');
+		if (!msg.content.split(' ')[0].match(/[0-9]{18}/g)) return interaction.channel.send('Invalid syntax');
 
 		const roleid = msg.content.split(' ')[0];
-		const role = message.guild.roles.cache.get(roleid);
-		if (!role) return message.channel.send('Invalid role');
+		const role = interaction.guild.roles.cache.get(roleid);
+		if (!role) return interaction.channel.send('Invalid role');
 
 		const label = msg.content.split(' ').slice(1, msg.content.split(' ').length - 1).join(' ');
 
@@ -44,16 +44,20 @@ module.exports.run = async (client, message, args) => {
 				.setDescription('Click on the buttons to get the specific role or vice-versa')
 				.setColor('RANDOM')
 				.setTimestamp();
-			Nuggies.dropdownroles.create({ message: message, content: embed, role: dpmanager, channelID: message.channel.id })
+			Nuggies.dropdownroles.create(client, { content: embed, role: dpmanager, channelID: interaction.channel.id, type: 'single' })
 		}
 	});
 };
 
 module.exports.config = {
-	name: 'create-dp',
+	name: 'createdp',
 	description: 'Creates dropdown role!',
 	usage: '?create-dp',
 	botPerms: [],
 	userPerms: ['MANAGE_GUILD'],
-	aliases: [],
+	data: {
+		name: 'createdp',
+		description: 'Creates dropdown roles',
+		defaultPermission: true,
+	},
 };
